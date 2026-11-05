@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>HeritageLens · Digital Painting Restoration</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar"><div class="brand-mark">H</div><div><div class="brand">HeritageLens</div><div class="subbrand">DIGITAL HERITAGE LAB</div></div><div class="top-status"><span class="status-dot"></span> Local workspace</div></header>
+<main class="shell">
+  <section class="hero"><div class="eyebrow">COMPUTER VISION · CONSERVATION SUPPORT</div><h1>See the painting.<br><em>Explore its possible recovery.</em></h1><p>Analyze a heritage painting, mark damaged regions, preview an inpainting estimate, and inspect the image panels in a 3D viewer.</p></section>
+  <section class="notice"><strong>Research prototype</strong><span>Restoration is an approximate preview, not a reconstruction of the historically correct original. Always preserve the source image.</span></section>
+  <section class="workspace-grid">
+    <article class="panel upload-panel"><div class="panel-heading"><div><span class="step">01</span><h2>Upload & analyze</h2></div><span class="micro">PNG · JPG · WEBP</span></div>
+      <label class="dropzone" id="dropzone" for="imageInput"><input id="imageInput" type="file" accept="image/png,image/jpeg,image/webp,image/bmp"><span class="upload-icon">↑</span><strong>Choose a painting image</strong><span>or drag and drop it here</span><small>Maximum 20 MB</small></label>
+      <div class="preview-wrap hidden" id="sourceWrap"><img id="sourcePreview" alt="Uploaded painting preview"><div class="preview-caption"><span>ORIGINAL IMAGE</span><span id="imageDimensions"></span></div></div>
+      <button id="analyzeBtn" class="button primary" disabled>Analyze damage <span>↗</span></button>
+      <div id="analysisResult" class="result-box hidden"></div>
+      <div class="model-note"><span class="note-icon">ⓘ</span><div><strong>Model status</strong><p>{{ 'Your CNN model is available.' if model_ready else 'CNN not loaded: add your trained .keras file to models/ or configure MODEL_PATH.' }}</p><small>{{ model_message }}</small></div></div>
+    </article>
+    <article class="panel restoration-panel"><div class="panel-heading"><div><span class="step">02</span><h2>Mark & restore</h2></div><span class="micro">MANUAL DAMAGE MASK</span></div>
+      <p class="helper">Use the brush to paint over cracks, losses, or damaged patches. White mask strokes indicate the regions to inpaint.</p>
+      <div class="mask-tools"><label>Brush <input id="brushSize" type="range" min="6" max="60" value="24"></label><span id="brushValue">24 px</span><button id="clearMaskBtn" class="button ghost" disabled>Clear mask</button></div>
+      <div class="mask-canvas-wrap" id="maskWrap"><canvas id="maskCanvas" width="800" height="520"></canvas><div id="maskPlaceholder" class="canvas-placeholder">Upload an image to mark damaged areas</div></div>
+      <button id="restoreBtn" class="button primary" disabled>Generate restoration preview <span>✳</span></button>
+      <div id="restoreMessage" class="small-message"></div>
+      <div class="compare-images hidden" id="compareImages"><div><span>ORIGINAL</span><img id="compareBefore" alt="Original painting"></div><div><span>INPAINTING PREVIEW</span><img id="compareAfter" alt="Approximate restored painting"></div></div>
+    </article>
+  </section>
+  <section class="panel viewer-panel"><div class="panel-heading"><div><span class="step">03</span><h2>Before & after comparison</h2></div><span class="micro">DRAG SLIDER TO COMPARE</span></div><p class="helper">Move the slider to compare the original painting with the estimated inpainting preview. This viewer works offline and does not require 3D libraries.</p>
+    <div class="viewer-toolbar"><div class="segmented"><button class="view-mode active" data-mode="both">Compare</button><button class="view-mode" data-mode="before">Before only</button><button class="view-mode" data-mode="after">After only</button></div><button id="resetViewBtn" class="button ghost">Reset comparison ↻</button></div>
+    <div id="threeViewer" class="three-viewer offline-viewer"><div class="viewer-placeholder" id="viewerPlaceholder"><span>▧</span><strong>Your comparison appears here</strong><small>Upload an image and generate a restoration preview to compare.</small></div></div>
+    <div class="viewer-slider-row" id="viewerSliderRow"><label for="comparisonSlider">Original / restored split</label><input id="comparisonSlider" type="range" min="0" max="100" value="50" disabled><span id="comparisonValue">50%</span></div>
+    <div class="viewer-legend"><span><i class="legend-original"></i> Original / damaged</span><span><i class="legend-restored"></i> Estimated inpainting</span></div>
+  </section>
+  <section class="panel history-panel"><div class="panel-heading"><div><span class="step">04</span><h2>Recent analyses</h2></div><button id="refreshHistoryBtn" class="button ghost">Refresh ↻</button></div><div id="historyList" class="history-list"><p class="helper">Saved analysis records will appear here.</p></div></section>
+  <footer><span>HeritageLens · Student research prototype</span><span>Keep an untouched archival copy of every image.</span></footer>
+</main>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body></html>
